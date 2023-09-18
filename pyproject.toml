@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+
+
+[project]
+name = "gooey_tools"
+authors = [
+    {name = "Mark Simmons", email = "mjsimmons@ucsd.edu"},
+]
+description = ""
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+version = "0.2.0"
