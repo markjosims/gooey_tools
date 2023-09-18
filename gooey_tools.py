@@ -70,6 +70,9 @@ def add_hybrid_arg(
     ) -> Action:
     """
     Add argument to parser and return.
+    If using _ArgumentGroup, pass _ArgumentGroup to group arg
+    and the parent Argument/GooeyParser to the parser arg
+    since _ArgumentGroup does not support type validation.
     If type is 'file' or 'folder', replace with an appropriate validation function
     and sets widget arg automatically.
     If in CLI environment, remove any Gooey-specific args to avoid a KeyError.
