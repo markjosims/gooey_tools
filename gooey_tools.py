@@ -1,5 +1,5 @@
 from typing import Optional, Sequence, Generator, Any, Iterable, Callable, Union
-from argparse import ArgumentParser, Action
+from argparse import ArgumentParser, Action, _ArgumentGroup
 from time import sleep
 from tqdm import tqdm
 from inspect import signature
@@ -65,6 +65,7 @@ def is_valid_dir(parser: ArgumentParser, arg: str) -> str:
 def add_hybrid_arg(
         parser: Union[ArgumentParser, GooeyParser],
         *args,
+        group: Optional[_ArgumentGroup] = None,
         **kwargs,
     ) -> Action:
     """
@@ -87,6 +88,8 @@ def add_hybrid_arg(
     # can't use metavar w/ boolean args w/ argparse
     if kwargs.get('action', None) in ('store_true', 'store_false'):
         kwargs.pop('metavar', None)
+    if group:
+        return group.add_argument(*args, **kwargs)
     return parser.add_argument(*args, **kwargs)
 
 def tqdm_gooey(
