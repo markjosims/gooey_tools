@@ -15,4 +15,5 @@ requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
+dependencies = ["gooey", "tqdm"]
 version = "0.2.0"
