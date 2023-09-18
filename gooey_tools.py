@@ -78,8 +78,14 @@ def add_hybrid_arg(
     if argtype == 'file':
         kwargs['type'] = lambda x: is_valid_file(parser, x)
         kwargs['widget'] = 'FileChooser'
+    if argtype == 'filepath':
+        kwargs['type'] = str
+        kwargs['widget'] = 'FileChooser'
     if (argtype == 'folder') or (argtype == 'dir'):
         kwargs['type'] = lambda x: is_valid_dir(parser, x)
+        kwargs['widget'] = 'DirChooser'
+    if (argtype == 'folderpath') or (argtype == 'dirpath'):
+        kwargs['type'] = str
         kwargs['widget'] = 'DirChooser'
 
     if GUI:
