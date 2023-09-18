@@ -36,13 +36,13 @@ def HybridGooey(f: Optional[Callable] = None, **gkwargs):
         return inner_gui
     return inner_cli
 
-def HybridGooeyParser() -> Union[ArgumentParser, GooeyParser]:
+def HybridGooeyParser(*args, **kwargs) -> Union[ArgumentParser, GooeyParser]:
     """
     Returns argparse.ArgumentParser or gooey.GooeyParser depending on environment.
     """
     if GUI:
-        return GooeyParser
-    return ArgumentParser
+        return GooeyParser(*args, **kwargs)
+    return ArgumentParser(*args, **kwargs)
 
 def is_valid_file(parser: ArgumentParser, arg: str) -> str:
     """
