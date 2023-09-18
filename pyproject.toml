@@ -17,3 +17,6 @@ classifiers = [
 ]
 dependencies = ["gooey", "tqdm"]
 version = "0.2.0"
+
+[tool.setuptools]
+py-modules = ["gooey_tools"]
