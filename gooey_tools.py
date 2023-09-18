@@ -1,7 +1,8 @@
-from typing import Optional, Sequence, Generator, Any, Iterable, Callable
+from typing import Optional, Sequence, Generator, Any, Iterable, Callable, Union
 from argparse import ArgumentParser
 from time import sleep
 from tqdm import tqdm
+from inspect import signature
 import io
 import os
 from gooey import Gooey, GooeyParser
@@ -34,6 +35,14 @@ def HybridGooey(f: Optional[Callable] = None, **gkwargs):
     if GUI:
         return inner_gui
     return inner_cli
+
+def HybridGooeyParser() -> Union[ArgumentParser, GooeyParser]:
+    """
+    Returns argparse.ArgumentParser or gooey.GooeyParser depending on environment.
+    """
+    if GUI:
+        return GooeyParser
+    return ArgumentParser
 
 def tqdm_gooey(
         iterable: Iterable,
