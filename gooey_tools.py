@@ -1,7 +1,8 @@
-from typing import Optional, Sequence, Generator, Any, Iterable, Callable
-from argparse import ArgumentParser
+from typing import Optional, Sequence, Generator, Any, Iterable, Callable, Union
+from argparse import ArgumentParser, Action
 from time import sleep
 from tqdm import tqdm
+from inspect import signature
 import io
 import os
 from gooey import Gooey, GooeyParser
@@ -34,6 +35,59 @@ def HybridGooey(f: Optional[Callable] = None, **gkwargs):
     if GUI:
         return inner_gui
     return inner_cli
+
+def HybridGooeyParser() -> Union[ArgumentParser, GooeyParser]:
+    """
+    Returns argparse.ArgumentParser or gooey.GooeyParser depending on environment.
+    """
+    if GUI:
+        return GooeyParser
+    return ArgumentParser
+
+def is_valid_file(parser: ArgumentParser, arg: str) -> str:
+    """
+    Return error if filepath not found, return filepath otherwise.
+    """
+    if not os.path.exists(arg):
+        parser.error("The file %s does not exist" % arg)
+    else:
+        return arg
+    
+def is_valid_dir(parser: ArgumentParser, arg: str) -> str:
+    """
+    Return error if directory path not found, return filepath otherwise.
+    """
+    if not os.path.isdir(arg):
+        parser.error("The folder %s does not exist" % arg)
+    else:
+        return arg
+
+def add_hybrid_arg(
+        parser: Union[ArgumentParser, GooeyParser],
+        *args,
+        **kwargs,
+    ) -> Action:
+    """
+    Add argument to parser and return.
+    If type is 'file' or 'folder', replace with an appropriate validation function
+    and sets widget arg automatically.
+    If in CLI environment, remove any Gooey-specific args to avoid a KeyError.
+    """
+    argtype = kwargs.pop('type', None)
+    if argtype == 'file':
+        kwargs['type'] = lambda x: is_valid_file(parser, x)
+        kwargs['widget'] = 'FileChooser'
+    if (argtype == 'folder') or (argtype == 'dir'):
+        kwargs['type'] = lambda x: is_valid_dir(parser, x)
+        kwargs['widget'] = 'DirChooser'
+
+    if GUI:
+        return parser.add_argument(*args, **kwargs)
+    kwargs.pop('widget', None)
+    # can't use metavar w/ boolean args w/ argparse
+    if kwargs.get('action', None) in ('store_true', 'store_false'):
+        kwargs.pop('metavar', None)
+    return parser.add_argument(*args, **kwargs)
 
 def tqdm_gooey(
         iterable: Iterable,
