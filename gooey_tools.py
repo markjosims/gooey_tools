@@ -91,12 +91,12 @@ def add_hybrid_arg(
         kwargs['type'] = str
         kwargs['widget'] = 'DirChooser'
 
-    if GUI:
-        return parser.add_argument(*args, **kwargs)
-    kwargs.pop('widget', None)
-    # can't use metavar w/ boolean args w/ argparse
-    if kwargs.get('action', None) in ('store_true', 'store_false'):
-        kwargs.pop('metavar', None)
+    if not GUI:
+        kwargs.pop('widget', None)
+        # can't use metavar w/ boolean args w/ argparse
+        if kwargs.get('action', None) in ('store_true', 'store_false'):
+            kwargs.pop('metavar', None)
+
     if group:
         return group.add_argument(*args, **kwargs)
     return parser.add_argument(*args, **kwargs)
