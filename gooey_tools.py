@@ -70,6 +70,9 @@ def add_hybrid_arg(
     ) -> Action:
     """
     Add argument to parser and return.
+    If using _ArgumentGroup, pass _ArgumentGroup to group arg
+    and the parent Argument/GooeyParser to the parser arg
+    since _ArgumentGroup does not support type validation.
     If type is 'file' or 'folder', replace with an appropriate validation function
     and sets widget arg automatically.
     If in CLI environment, remove any Gooey-specific args to avoid a KeyError.
@@ -78,16 +81,22 @@ def add_hybrid_arg(
     if argtype == 'file':
         kwargs['type'] = lambda x: is_valid_file(parser, x)
         kwargs['widget'] = 'FileChooser'
+    if argtype == 'filepath':
+        kwargs['type'] = str
+        kwargs['widget'] = 'FileChooser'
     if (argtype == 'folder') or (argtype == 'dir'):
         kwargs['type'] = lambda x: is_valid_dir(parser, x)
         kwargs['widget'] = 'DirChooser'
+    if (argtype == 'folderpath') or (argtype == 'dirpath'):
+        kwargs['type'] = str
+        kwargs['widget'] = 'DirChooser'
 
-    if GUI:
-        return parser.add_argument(*args, **kwargs)
-    kwargs.pop('widget', None)
-    # can't use metavar w/ boolean args w/ argparse
-    if kwargs.get('action', None) in ('store_true', 'store_false'):
-        kwargs.pop('metavar', None)
+    if not GUI:
+        kwargs.pop('widget', None)
+        # can't use metavar w/ boolean args w/ argparse
+        if kwargs.get('action', None) in ('store_true', 'store_false'):
+            kwargs.pop('metavar', None)
+
     if group:
         return group.add_argument(*args, **kwargs)
     return parser.add_argument(*args, **kwargs)
