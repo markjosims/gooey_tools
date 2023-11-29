@@ -77,7 +77,7 @@ def add_hybrid_arg(
     and sets widget arg automatically.
     If in CLI environment, remove any Gooey-specific args to avoid a KeyError.
     """
-    argtype = kwargs.pop('type', None)
+    argtype = kwargs.get('type', None)
     if argtype == 'file':
         kwargs['type'] = lambda x: is_valid_file(parser, x)
         kwargs['widget'] = 'FileChooser'
